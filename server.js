@@ -38,9 +38,9 @@ app.post("/create-checkout-session", async (req, res) => {
           currency: "usd",
           unit_amount: Math.round(item.price * 100),
           product_data: {
-            name: item.title,
-            description: item.description,
-          },
+  name: item.title || "Unnamed Product",
+  description: item.description || "No description",
+},
         },
         quantity: item.quantity || 1,
       })),

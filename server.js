@@ -1,6 +1,11 @@
-const express = require("express");
-const cors = require("cors");
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+import express from 'express';
+import Stripe from 'stripe';
+import cors from 'cors';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const app = express();
 
@@ -8,19 +13,24 @@ const app = express();
 const allowedOrigins = [
   "https://stephenscode.dev",
   "https://www.stephenscode.dev",
+  "https://customer.stephenscode.dev",
 ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-  })
-);
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS",
+  allowedHeaders: "Content-Type,Authorization",
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
